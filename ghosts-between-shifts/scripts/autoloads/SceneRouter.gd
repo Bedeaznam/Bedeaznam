@@ -26,8 +26,10 @@ func current_scene_path() -> String:
 
 
 func goto(path: String, push_return: bool = false) -> void:
-	if _busy:
-		return
+	# If a transition is already running, wait for it to finish instead of
+	# silently dropping this request (which would lose queued story beats).
+	while _busy:
+		await get_tree().process_frame
 	if push_return:
 		var cur := current_scene_path()
 		if cur != "":

@@ -14,11 +14,16 @@ var _processing_queue := false
 func _ready() -> void:
 	AudioDirector.play_cue("tavern")
 	_build_ui()
-	# 1) Resolve a mini-game that just returned before touching the story.
+	# Resolve a mini-game that just returned (which enqueues and drives the next
+	# story beats via _after_activity). Otherwise continue any queued beats left
+	# over from a scene that returned to the hub (e.g. a ghost sequence).
+	# NOTE: these must be mutually exclusive — calling _process_queue() twice here
+	# would pop a second token while the hub-entry transition is still busy, and
+	# SceneRouter.goto() no-ops while busy, silently dropping ghost/ending beats.
 	if GameState.has_pending():
 		_resolve_pending()
-	# 2) Continue any queued story beats (dialogue/ghost/phase/sleep).
-	_process_queue()
+	else:
+		_process_queue()
 
 
 func _build_ui() -> void:
