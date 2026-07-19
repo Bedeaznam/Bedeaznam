@@ -1,0 +1,83 @@
+{
+  "day": {
+    "start_hour": 8,
+    "end_hour": 24,
+    "max_energy": 100
+  },
+  "stats": [
+    { "id": "discipline",        "label_bg": "Дисциплина",              "label_en": "Discipline",              "min": 0, "max": 100, "default": 30 },
+    { "id": "physical",          "label_bg": "Физическа сила",          "label_en": "Physical strength",       "min": 0, "max": 100, "default": 35 },
+    { "id": "armwrestling",      "label_bg": "Канадска техника",        "label_en": "Arm-wrestling technique", "min": 0, "max": 100, "default": 20 },
+    { "id": "technical",         "label_bg": "Технически знания",       "label_en": "Technical knowledge",     "min": 0, "max": 100, "default": 40 },
+    { "id": "programming",       "label_bg": "Програмиране",            "label_en": "Programming",             "min": 0, "max": 100, "default": 45 },
+    { "id": "electronics",       "label_bg": "Електроника",             "label_en": "Electronics",             "min": 0, "max": 100, "default": 30 },
+    { "id": "creativity",        "label_bg": "Креативност",             "label_en": "Creativity",              "min": 0, "max": 100, "default": 40 },
+    { "id": "printing3d",        "label_bg": "3D печат",                "label_en": "3D-printing skill",       "min": 0, "max": 100, "default": 35 },
+    { "id": "english",           "label_bg": "Английски",               "label_en": "English",                 "min": 0, "max": 100, "default": 50 },
+    { "id": "russian",           "label_bg": "Руски",                   "label_en": "Russian",                 "min": 0, "max": 100, "default": 25 },
+    { "id": "ukrainian",         "label_bg": "Украински",               "label_en": "Ukrainian",               "min": 0, "max": 100, "default": 10 },
+    { "id": "financial",         "label_bg": "Финансова стабилност",    "label_en": "Financial stability",     "min": 0, "max": 100, "default": 30 },
+    { "id": "sleep",             "label_bg": "Сън",                     "label_en": "Sleep",                   "min": 0, "max": 100, "default": 70 },
+    { "id": "emotional",         "label_bg": "Емоционална стабилност",  "label_en": "Emotional stability",     "min": 0, "max": 100, "default": 50 },
+    { "id": "selfrespect",       "label_bg": "Самоуважение",            "label_en": "Self-respect",            "min": 0, "max": 100, "default": 40 },
+    { "id": "attachment",        "label_bg": "Привързаност",            "label_en": "Attachment",              "min": 0, "max": 100, "default": 20 },
+    { "id": "hope",              "label_bg": "Надежда",                 "label_en": "Hope",                    "min": 0, "max": 100, "default": 45 }
+  ],
+  "activities": [
+    {
+      "id": "programming", "label_bg": "Програмиране / Linux", "label_en": "Programming / Linux",
+      "hours": 3, "energy": 20, "scene": "room_workshop", "minigame": "res://scenes/minigames/LinuxPuzzle.tscn",
+      "effects": { "programming": 4, "technical": 2, "discipline": 1, "hope": 1 }
+    },
+    {
+      "id": "printing", "label_bg": "3D печат (поръчка/ремонт)", "label_en": "3D printing (order/repair)",
+      "hours": 2, "energy": 15, "scene": "room_workshop", "minigame": "res://scenes/minigames/PrinterRepair.tscn",
+      "effects": { "printing3d": 4, "technical": 2, "financial": 3 }
+    },
+    {
+      "id": "robotics", "label_bg": "Електроника / роботика", "label_en": "Electronics / robotics",
+      "hours": 3, "energy": 20, "scene": "room_workshop", "minigame": "res://scenes/minigames/RoboticsAssembly.tscn",
+      "effects": { "electronics": 4, "technical": 3, "creativity": 2 }
+    },
+    {
+      "id": "training", "label_bg": "Тренировка (канадска борба)", "label_en": "Training (arm-wrestling)",
+      "hours": 2, "energy": 25, "scene": "room_workshop", "minigame": "res://scenes/minigames/ArmWrestling.tscn",
+      "effects": { "armwrestling": 4, "physical": 3, "discipline": 2, "emotional": 1 }
+    },
+    {
+      "id": "waiter", "label_bg": "Смяна като сервитьор", "label_en": "Waiter shift",
+      "hours": 4, "energy": 30, "scene": "tavern", "minigame": "res://scenes/minigames/WaiterWork.tscn",
+      "effects": { "financial": 6, "english": 1, "emotional": -2 }
+    },
+    {
+      "id": "languages", "label_bg": "Учене на езици", "label_en": "Language study",
+      "hours": 2, "energy": 12, "scene": "room_workshop", "minigame": "",
+      "effects": { "russian": 3, "ukrainian": 2, "english": 2, "discipline": 1 }
+    },
+    {
+      "id": "reading", "label_bg": "Четене", "label_en": "Reading",
+      "hours": 2, "energy": 8, "scene": "room_workshop", "minigame": "",
+      "effects": { "technical": 2, "creativity": 2, "hope": 1, "emotional": 1 }
+    },
+    {
+      "id": "dog", "label_bg": "Време с кучето", "label_en": "Time with the dog",
+      "hours": 1, "energy": 5, "scene": "town_hub", "minigame": "",
+      "effects": { "emotional": 4, "hope": 2, "selfrespect": 1 }
+    },
+    {
+      "id": "mountain", "label_bg": "Планина", "label_en": "Mountain",
+      "hours": 4, "energy": 20, "scene": "mountain", "minigame": "res://scenes/minigames/MountainExploration.tscn",
+      "effects": { "emotional": 5, "hope": 3, "physical": 2, "selfrespect": 2 }
+    },
+    {
+      "id": "rest", "label_bg": "Почивка", "label_en": "Rest",
+      "hours": 2, "energy": -15, "scene": "room_workshop", "minigame": "",
+      "effects": { "emotional": 2, "sleep": 4 }
+    },
+    {
+      "id": "sleep", "label_bg": "Лягане / сън", "label_en": "Sleep",
+      "hours": 0, "energy": 0, "scene": "room_workshop", "minigame": "",
+      "effects": {}
+    }
+  ]
+}
