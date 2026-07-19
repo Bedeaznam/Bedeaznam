@@ -1,4 +1,4 @@
-extends MinigameBase
+extends "res://scripts/minigames/minigame_base.gd"
 ## 3D-printer diagnostics: read the symptoms, pick the correct diagnosis and
 ## fix, then set a price (money vs. reputation trade-off).
 

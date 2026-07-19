@@ -6,6 +6,8 @@ extends SceneTree
 ## Autoloads are fetched by node path because global autoload identifiers are
 ## not available to a script launched with `-s`.
 
+const StoryDir := preload("res://scripts/story_director.gd")
+
 var _failures := 0
 var gs: Node
 var sm: Node
@@ -86,7 +88,7 @@ func _run() -> void:
 		act_ids[a["id"]] = true
 	for phase in ["FRI_MORNING", "FRI_AFTERNOON", "FRI_EVENING",
 			"SAT_MORNING", "SAT_AFTERNOON", "SAT_EVENING", "SUN_MORNING"]:
-		for req in StoryDirector.required_activities(phase):
+		for req in StoryDir.required_activities(phase):
 			_check(act_ids.has(req), "phase %s requires known activity %s" % [phase, req])
 
 	# Instantiate every scene (runs _ready).

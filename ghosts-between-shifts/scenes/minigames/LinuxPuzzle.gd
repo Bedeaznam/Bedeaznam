@@ -1,4 +1,4 @@
-extends MinigameBase
+extends "res://scripts/minigames/minigame_base.gd"
 ## Linux/programming puzzle — a FULLY SIMULATED, sandboxed, fictional terminal.
 ## It NEVER touches the real OS and NEVER executes real commands. Everything is
 ## an in-memory model. Objective: the fake service "printerd" is failing; find

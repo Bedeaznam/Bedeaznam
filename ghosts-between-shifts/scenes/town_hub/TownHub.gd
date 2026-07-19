@@ -2,9 +2,17 @@ extends Control
 ## TownHub — the day map. Presents activities, resolves returning mini-game
 ## results, and drives the scripted weekend via GameState.story_queue.
 
-var _hud: HUD
-var _stats_panel: StatsPanel
-var _dialogue: DialogueBox
+# Reference dependencies via preload() rather than global class_name so the
+# hub parses on a fresh project run before the global class cache is built.
+const HUDScene := preload("res://scripts/ui/HUD.gd")
+const StatsPanelScene := preload("res://scripts/ui/StatsPanel.gd")
+const DialogueBoxScene := preload("res://scripts/ui/DialogueBox.gd")
+const GradientBackdropScene := preload("res://scripts/ui/gradient_backdrop.gd")
+const StoryDir := preload("res://scripts/story_director.gd")
+
+var _hud: HUDScene
+var _stats_panel: StatsPanelScene
+var _dialogue: DialogueBoxScene
 var _activity_list: VBoxContainer
 var _objective_label: Label
 var _toast: Label
@@ -28,17 +36,17 @@ func _ready() -> void:
 
 func _build_ui() -> void:
 	set_anchors_preset(Control.PRESET_FULL_RECT)
-	var backdrop := GradientBackdrop.new()
+	var backdrop := GradientBackdropScene.new()
 	backdrop.set_anchors_preset(Control.PRESET_FULL_RECT)
 	backdrop.top_color = Color(0.03, 0.05, 0.09)
 	backdrop.bottom_color = Color(0.08, 0.06, 0.05)
 	add_child(backdrop)
 
-	_hud = HUD.new()
+	_hud = HUDScene.new()
 	add_child(_hud)
-	_stats_panel = StatsPanel.new()
+	_stats_panel = StatsPanelScene.new()
 	add_child(_stats_panel)
-	_dialogue = DialogueBox.new()
+	_dialogue = DialogueBoxScene.new()
 	add_child(_dialogue)
 
 	var center := VBoxContainer.new()
@@ -136,8 +144,8 @@ func _build_ui() -> void:
 func _rebuild_activities() -> void:
 	for c in _activity_list.get_children():
 		c.queue_free()
-	_objective_label.text = StoryDirector.objective(GameState.phase)
-	var required: Array = StoryDirector.required_activities(GameState.phase)
+	_objective_label.text = StoryDir.objective(GameState.phase)
+	var required: Array = StoryDir.required_activities(GameState.phase)
 	var first_btn: Button = null
 	for act in GameState.config.get("activities", []):
 		var id := String(act["id"])
@@ -203,9 +211,9 @@ func _resolve_pending() -> void:
 
 # When a phase's required activity is done, enqueue its story beats.
 func _after_activity(activity_id: String) -> void:
-	var required: Array = StoryDirector.required_activities(GameState.phase)
+	var required: Array = StoryDir.required_activities(GameState.phase)
 	if activity_id in required:
-		var beats: Array = StoryDirector.beats_after(GameState.phase)
+		var beats: Array = StoryDir.beats_after(GameState.phase)
 		for b in beats:
 			GameState.story_queue.append(b)
 		_process_queue()
@@ -225,7 +233,7 @@ func _process_queue() -> void:
 		elif token.begins_with("ghost:"):
 			GameState.story_queue.pop_front()
 			AudioDirector.play_cue("ghost")
-			SceneRouter.goto(StoryDirector.ghost_scene(int(token.substr(6))), true)
+			SceneRouter.goto(StoryDir.ghost_scene(int(token.substr(6))), true)
 			_processing_queue = false
 			return   # resumes when hub reloads
 		elif token.begins_with("phase:"):

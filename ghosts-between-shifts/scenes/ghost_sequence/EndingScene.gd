@@ -2,6 +2,8 @@ extends Control
 ## Ending screen — evaluates GameState and shows one of four states. The best
 ## ending (THE PATH) does not magically erase the pain.
 
+const GradientBackdropScene := preload("res://scripts/ui/gradient_backdrop.gd")
+
 const ENDINGS := {
 	"LOOP": {
 		"title": "THE LOOP",
@@ -42,7 +44,7 @@ func _ready() -> void:
 
 func _build_ui(key: String, data: Dictionary) -> void:
 	set_anchors_preset(Control.PRESET_FULL_RECT)
-	var backdrop := GradientBackdrop.new()
+	var backdrop := GradientBackdropScene.new()
 	backdrop.set_anchors_preset(Control.PRESET_FULL_RECT)
 	backdrop.top_color = Color(0.02, 0.02, 0.05)
 	backdrop.bottom_color = data["color"] * 0.25

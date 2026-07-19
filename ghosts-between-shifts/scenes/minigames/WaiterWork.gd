@@ -1,4 +1,4 @@
-extends MinigameBase
+extends "res://scripts/minigames/minigame_base.gd"
 ## Waiter shift: remember each customer's order under time pressure, then serve
 ## it. Some customers speak RU/UK/EN — matching language (skill-gated) yields a
 ## correct reply and a bigger tip. Failures raise stress.

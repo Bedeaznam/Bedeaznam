@@ -3,13 +3,16 @@ class_name MinigameBase
 ## Shared scaffolding for mini-games: backdrop, title, instructions, and a
 ## single exit path that reports a 0..1 score back to the hub.
 
+const GradientBackdropScene := preload("res://scripts/ui/gradient_backdrop.gd")
+const HUDScene := preload("res://scripts/ui/HUD.gd")
+
 var _title_label: Label
 var _info_label: Label
 var content: Control   # add gameplay nodes here
 
 func setup(title: String, instructions: String) -> void:
 	set_anchors_preset(Control.PRESET_FULL_RECT)
-	var backdrop := GradientBackdrop.new()
+	var backdrop := GradientBackdropScene.new()
 	backdrop.set_anchors_preset(Control.PRESET_FULL_RECT)
 	backdrop.top_color = Color(0.03, 0.04, 0.08)
 	backdrop.bottom_color = Color(0.07, 0.05, 0.05)
@@ -34,7 +37,7 @@ func setup(title: String, instructions: String) -> void:
 	content.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(content)
 
-	var hud := HUD.new()
+	var hud := HUDScene.new()
 	add_child(hud)
 
 

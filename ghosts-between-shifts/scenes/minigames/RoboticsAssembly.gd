@@ -1,4 +1,4 @@
-extends MinigameBase
+extends "res://scripts/minigames/minigame_base.gd"
 ## Robotics assembly: wire a small desktop robot correctly. The servo must run
 ## from an EXTERNAL supply with a COMMON GROUND — never straight off the MCU pin.
 

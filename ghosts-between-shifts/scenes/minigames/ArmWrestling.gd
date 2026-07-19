@@ -1,5 +1,4 @@
-extends MinigameBase
-class_name ArmWrestling
+extends "res://scripts/minigames/minigame_base.gd"
 ## Arm-wrestling: timing + positioning, NOT button-mashing. Each round is a
 ## technique (wrist control, top roll, inside transition, pronation, endurance).
 ## A marker sweeps a bar; press mg_action inside the technique's target zone.
@@ -124,7 +123,7 @@ func _finish_match() -> void:
 
 # Inner drawing node keeps _draw isolated from gameplay state.
 class _ArmDraw extends Control:
-	var owner_game: ArmWrestling
+	var owner_game   # the ArmWrestling instance (untyped to avoid class_name dependency)
 	func _draw() -> void:
 		if owner_game == null:
 			return
@@ -141,10 +140,10 @@ class _ArmDraw extends Control:
 			var zx := r.position.x + (zc - half) * r.size.x
 			draw_rect(Rect2(Vector2(zx, r.position.y), Vector2(2.0 * half * r.size.x, r.size.y)), Color(0.2, 0.5, 0.25))
 		# Marker.
-		var mx := r.position.x + owner_game._marker * r.size.x
+		var mx: float = r.position.x + float(owner_game._marker) * r.size.x
 		draw_rect(Rect2(Vector2(mx - 3, r.position.y - 10), Vector2(6, r.size.y + 20)), Color(1, 0.8, 0.4))
 		# Advantage meter.
 		var meter := Rect2(360, 400, 1200, 16)
 		draw_rect(meter, Color(0.1, 0.1, 0.14))
-		var frac := (owner_game._advantage + 100.0) / 200.0
+		var frac: float = (float(owner_game._advantage) + 100.0) / 200.0
 		draw_rect(Rect2(meter.position, Vector2(meter.size.x * frac, meter.size.y)), Color(0.9, 0.55, 0.3))

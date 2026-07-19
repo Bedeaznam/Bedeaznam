@@ -1,4 +1,4 @@
-extends MinigameBase
+extends "res://scripts/minigames/minigame_base.gd"
 ## Mountain exploration: emotional recovery, materials, hidden philosophical
 ## monologues. Recklessness carries consequences (injury, lost calm).
 

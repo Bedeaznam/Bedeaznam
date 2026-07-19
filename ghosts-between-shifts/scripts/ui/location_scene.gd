@@ -4,6 +4,9 @@ extends Control
 
 @export var location_id: String = "room"
 
+const GradientBackdropScene := preload("res://scripts/ui/gradient_backdrop.gd")
+const HUDScene := preload("res://scripts/ui/HUD.gd")
+
 const DATA := {
 	"room": {
 		"title": "Стаята / работилницата на Ясен",
@@ -39,13 +42,13 @@ func _ready() -> void:
 
 func _build(d: Dictionary) -> void:
 	set_anchors_preset(Control.PRESET_FULL_RECT)
-	var backdrop := GradientBackdrop.new()
+	var backdrop := GradientBackdropScene.new()
 	backdrop.set_anchors_preset(Control.PRESET_FULL_RECT)
 	backdrop.top_color = d["top"]
 	backdrop.bottom_color = d["bottom"]
 	add_child(backdrop)
 
-	var hud := HUD.new()
+	var hud := HUDScene.new()
 	add_child(hud)
 
 	var vb := VBoxContainer.new()
