@@ -1,0 +1,52 @@
+{
+  "id": "confrontation",
+  "start": "c1",
+  "nodes": [
+    {
+      "id": "c1",
+      "speaker": "Разказвач",
+      "text": "Неделя, високо на билото. Градът лежи долу в мъглата, кучето е легнало до краката ти. Тук, най-накрая, оставаш насаме със себе си.",
+      "goto": "c2"
+    },
+    {
+      "id": "c2",
+      "speaker": "Вътрешен глас",
+      "text": "И така. Мира постави граница. Смяната утре пак те чака. Въпросът не е за нея — а за теб. Какво ще строиш оттук нататък?",
+      "goto": "c_craft"
+    },
+    {
+      "id": "c_craft",
+      "speaker": "Ясен",
+      "text": "Кое е нещото, в което искам да вложа себе си?",
+      "choices": [
+        { "text": "Софтуер / Linux — да пиша системи, които работят.", "goto": "c_boundary", "effects": { "programming": 10, "technical": 5, "hope": 4, "selfrespect": 3 }, "flag": "craft_choice", "flag_value": "software" },
+        { "text": "Роботика и електроника — да правя неща, които се движат.", "goto": "c_boundary", "effects": { "electronics": 10, "technical": 5, "hope": 4, "selfrespect": 3 }, "flag": "craft_choice", "flag_value": "robotics" },
+        { "text": "3D печат и занаят — услуга, репутация, свой малък бизнес.", "goto": "c_boundary", "effects": { "printing3d": 10, "creativity": 5, "hope": 4, "selfrespect": 3 }, "flag": "craft_choice", "flag_value": "printing" },
+        { "text": "Тялото и силата — канадска борба и дисциплина.", "goto": "c_boundary", "effects": { "armwrestling": 10, "physical": 5, "discipline": 5, "selfrespect": 3 }, "flag": "craft_choice", "flag_value": "strength" },
+        { "text": "Не знам още. Само ще изкарам следващата смяна.", "goto": "c_boundary", "effects": { "hope": -4, "selfrespect": -2 }, "flag": "craft_choice", "flag_value": "none" }
+      ]
+    },
+    {
+      "id": "c_boundary",
+      "speaker": "Вътрешен глас",
+      "text": "А сърцето? Каква граница поставяш — не срещу Мира, а за да останеш цял?",
+      "goto": "c_boundary_q"
+    },
+    {
+      "id": "c_boundary_q",
+      "speaker": "Ясен",
+      "text": "...",
+      "choices": [
+        { "text": "Оставам открит. Ще боли, но няма да се затворя.", "goto": "c_end", "effects": { "hope": 6, "emotional": 4, "attachment": -2, "selfrespect": 2 }, "flag": "boundary_choice", "flag_value": "open" },
+        { "text": "Слагам броня. Няма пак да съм толкова уязвим.", "goto": "c_end", "effects": { "discipline": 5, "emotional": -3, "hope": -3, "attachment": -4 }, "flag": "boundary_choice", "flag_value": "armor" },
+        { "text": "Държа се за нея тайно, с надежда, че ще се върне.", "goto": "c_end", "effects": { "attachment": 8, "hope": -2, "selfrespect": -3 }, "flag": "boundary_choice", "flag_value": "hold" }
+      ]
+    },
+    {
+      "id": "c_end",
+      "speaker": "Разказвач",
+      "text": "Кучето вдига глава. Мъглата долу започва да се вдига. Каквото и да избра, утрото ще дойде — но този път ти избираш как ще го посрещнеш.",
+      "goto": ""
+    }
+  ]
+}

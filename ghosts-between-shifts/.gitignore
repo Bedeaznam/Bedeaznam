@@ -1,0 +1,10 @@
+# Godot 4 import cache & build artifacts
+.godot/
+/build/
+*.import
+
+# Runtime saves land in user:// but ignore any stray local ones
+saves/*.json
+
+# OS cruft
+.DS_Store
