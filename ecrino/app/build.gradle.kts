@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.fusio3d.app"
+    namespace = "com.ecrino.app"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.fusio3d.app"
+        applicationId = "com.ecrino.app"
         minSdk = 24
         targetSdk = 34
         versionCode = 1

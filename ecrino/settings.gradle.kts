@@ -19,5 +19,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Fusio3D"
+rootProject.name = "Ecrino"
 include(":app")

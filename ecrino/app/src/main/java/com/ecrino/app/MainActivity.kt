@@ -1,4 +1,4 @@
-package com.fusio3d.app
+package com.ecrino.app
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -39,7 +39,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.fusio3d.app.ui.theme.Fusio3DTheme
+import com.ecrino.app.ui.theme.EcrinoTheme
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
@@ -47,14 +47,21 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            Fusio3DTheme {
+            EcrinoTheme {
                 OrderFormScreen()
             }
         }
     }
 }
 
-private val MATERIALS = listOf("PLA", "PETG", "ABS", "ASA", "TPU", "Друг / не съм сигурен")
+private val FINISHES = listOf(
+    "Мат",
+    "Гланц",
+    "Кадифено покритие",
+    "Металик / златисто",
+    "Дърво-имитация",
+    "Друг / по препоръка",
+)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -65,11 +72,13 @@ fun OrderFormScreen() {
 
     var name by remember { mutableStateOf("") }
     var contact by remember { mutableStateOf("") }
-    var description by remember { mutableStateOf("") }
-    var material by remember { mutableStateOf(MATERIALS.first()) }
-    var materialExpanded by remember { mutableStateOf(false) }
+    var style by remember { mutableStateOf("") }
+    var finish by remember { mutableStateOf(FINISHES.first()) }
+    var finishExpanded by remember { mutableStateOf(false) }
     var color by remember { mutableStateOf("") }
     var quantity by remember { mutableStateOf("1") }
+    var weddingDate by remember { mutableStateOf("") }
+    var engraving by remember { mutableStateOf("") }
     var referenceLink by remember { mutableStateOf("") }
     var notes by remember { mutableStateOf("") }
     var submitting by remember { mutableStateOf(false) }
@@ -86,9 +95,9 @@ fun OrderFormScreen() {
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Spacer(Modifier.height(8.dp))
-            Text("Fusio3D", style = MaterialTheme.typography.headlineMedium, color = MaterialTheme.colorScheme.primary)
+            Text("Ecrino", style = MaterialTheme.typography.headlineMedium, color = MaterialTheme.colorScheme.primary)
             Text(
-                "Заявка за 3D печат. Опиши какво искаш да принтираме — свързваме се с теб за детайли и цена.",
+                "Луксозни кутийки за годежен и сватбен пръстен, изработени по поръчка. Опиши идеята си — свързваме се с теб за детайли и цена.",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -109,39 +118,39 @@ fun OrderFormScreen() {
                 modifier = Modifier.fillMaxWidth()
             )
             OutlinedTextField(
-                value = description,
-                onValueChange = { description = it },
-                label = { Text("Какво да принтираме? *") },
+                value = style,
+                onValueChange = { style = it },
+                label = { Text("Стил / идея за кутийката *") },
                 minLines = 3,
                 modifier = Modifier.fillMaxWidth()
             )
 
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 ExposedDropdownMenuBox(
-                    expanded = materialExpanded,
-                    onExpandedChange = { materialExpanded = it },
+                    expanded = finishExpanded,
+                    onExpandedChange = { finishExpanded = it },
                     modifier = Modifier.weight(1f)
                 ) {
                     OutlinedTextField(
-                        value = material,
+                        value = finish,
                         onValueChange = {},
                         readOnly = true,
-                        label = { Text("Материал") },
-                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = materialExpanded) },
+                        label = { Text("Финиш") },
+                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = finishExpanded) },
                         modifier = Modifier
                             .menuAnchor()
                             .fillMaxWidth()
                     )
                     ExposedDropdownMenu(
-                        expanded = materialExpanded,
-                        onDismissRequest = { materialExpanded = false }
+                        expanded = finishExpanded,
+                        onDismissRequest = { finishExpanded = false }
                     ) {
-                        MATERIALS.forEach { option ->
+                        FINISHES.forEach { option ->
                             DropdownMenuItem(
                                 text = { Text(option) },
                                 onClick = {
-                                    material = option
-                                    materialExpanded = false
+                                    finish = option
+                                    finishExpanded = false
                                 }
                             )
                         }
@@ -165,9 +174,23 @@ fun OrderFormScreen() {
                 modifier = Modifier.fillMaxWidth()
             )
             OutlinedTextField(
+                value = weddingDate,
+                onValueChange = { weddingDate = it },
+                label = { Text("Дата на събитието (по желание)") },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth()
+            )
+            OutlinedTextField(
+                value = engraving,
+                onValueChange = { engraving = it },
+                label = { Text("Гравюра / персонализация (по желание)") },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth()
+            )
+            OutlinedTextField(
                 value = referenceLink,
                 onValueChange = { referenceLink = it },
-                label = { Text("Линк към модел/снимка (по желание)") },
+                label = { Text("Линк към снимка/пример (по желание)") },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth()
             )
@@ -185,7 +208,7 @@ fun OrderFormScreen() {
                     val missing = when {
                         name.isBlank() -> "Моля, въведи име."
                         contact.isBlank() -> "Моля, въведи контакт."
-                        description.isBlank() -> "Моля, опиши какво да принтираме."
+                        style.isBlank() -> "Моля, опиши стила/идеята за кутийката."
                         else -> null
                     }
                     if (missing != null) {
@@ -195,10 +218,12 @@ fun OrderFormScreen() {
                     val order = OrderRequest(
                         name = name.trim(),
                         contact = contact.trim(),
-                        description = description.trim(),
-                        material = material,
+                        style = style.trim(),
+                        finish = finish,
                         color = color.trim(),
                         quantity = quantity.toIntOrNull()?.coerceAtLeast(1) ?: 1,
+                        weddingDate = weddingDate.trim(),
+                        engraving = engraving.trim(),
                         referenceLink = referenceLink.trim(),
                         notes = notes.trim(),
                     )
@@ -224,7 +249,7 @@ fun OrderFormScreen() {
                         color = MaterialTheme.colorScheme.onPrimary
                     )
                 } else {
-                    Text("Изпрати заявка")
+                    Text("Изпрати запитване")
                 }
             }
             Spacer(Modifier.height(24.dp))
@@ -240,7 +265,7 @@ private suspend fun SnackbarHostState.showMessage(message: String) {
 @Preview(showBackground = true)
 @Composable
 fun OrderFormPreview() {
-    Fusio3DTheme {
+    EcrinoTheme {
         OrderFormScreen()
     }
 }

@@ -1,4 +1,4 @@
-package com.fusio3d.app
+package com.ecrino.app
 
 import android.content.Context
 import android.content.Intent
@@ -60,7 +60,7 @@ object OrderSubmitter {
             val send = Intent(Intent.ACTION_SEND).apply {
                 type = "text/plain"
                 putExtra(Intent.EXTRA_EMAIL, arrayOf(BuildConfig.ORDER_EMAIL))
-                putExtra(Intent.EXTRA_SUBJECT, "Fusio3D — заявка от ${order.name}")
+                putExtra(Intent.EXTRA_SUBJECT, "Ecrino — заявка от ${order.name}")
                 putExtra(Intent.EXTRA_TEXT, order.toEmailBody())
             }
             val chooser = Intent.createChooser(send, "Изпрати заявка чрез").apply {
