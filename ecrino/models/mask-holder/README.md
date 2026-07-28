@@ -1,13 +1,19 @@
-# Mask holder wand — Y7 (TPU / AMS)
+# Mask holder — Y7 (TPU / AMS)
 
-A long flexible handle with a jaw at the tip that pinches the **edge of a mask
-from the side**, so you can hold it without touching the fabric. Designed to be
-printed in **TPU** (e.g. 95A) so the stick won't snap and the jaws stay springy.
+Two variants, both printed in **TPU** (e.g. 95A) so the stick won't snap and the
+jaws stay springy:
+
+1. **`mask_stick`** — masquerade-style: a decorative turned-baluster handle with a
+   **side jaw at the top**. The pinch slot opens to the **right**, so the mask is
+   held to the *side* (like a Venetian mask-on-a-stick), not straight on top.
+2. **`mask_holder`** — a plain straight wand with the jaw in-line at the tip.
 
 ## Files
-- `mask_holder.scad` — parametric source
-- `mask_holder_spec.stl` — **exact spec**: mouth 0.2 → inner 0.1 mm, relief 0.2 mm
+- `mask_stick.scad` — baluster handle + side (right) jaw  ← the masquerade one
+- `mask_stick_printable.stl` / `mask_stick_spec.stl`
+- `mask_holder.scad` — straight in-line wand
 - `mask_holder_printable.stl` — **FDM-safe**: mouth 0.7 → inner 0.35 mm, relief 1.4 mm
+- `mask_holder_spec.stl` — **exact spec**: mouth 0.2 → inner 0.1 mm, relief 0.2 mm
 - `renders/` — preview images
 
 ## Important: slot size vs. FDM resolution
@@ -44,6 +50,8 @@ so it doesn't slip out. Flexible TPU lets the lips flex open and clamp back.
 
 ## Re-export STL
 ```bash
-openscad -o mask_holder_spec.stl      -D "printable=false" mask_holder.scad
-openscad -o mask_holder_printable.stl -D "printable=true"  mask_holder.scad
+openscad -o mask_stick_spec.stl        -D "printable=false" mask_stick.scad
+openscad -o mask_stick_printable.stl   -D "printable=true"  mask_stick.scad
+openscad -o mask_holder_spec.stl       -D "printable=false" mask_holder.scad
+openscad -o mask_holder_printable.stl  -D "printable=true"  mask_holder.scad
 ```
