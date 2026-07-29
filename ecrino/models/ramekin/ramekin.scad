@@ -9,19 +9,21 @@
 // ============================================================
 
 // ---- overall shape ----
-R_bot   = 31;    // outer radius at the bottom (valley of the flutes)
-R_top   = 43;    // outer radius at the top
-H       = 44;    // wall height (up to the rim)
-wall    = 2.6;   // wall thickness
-floor_t = 3.4;   // floor thickness
+// Tuned to match the user's own (smaller) ramekin: less flare, finer
+// ribs, slimmer rim. Send exact ⌀top / ⌀bottom / height to lock the size.
+R_bot   = 28;    // outer radius at the bottom (valley of the flutes)
+R_top   = 36;    // outer radius at the top
+H       = 40;    // wall height (up to the rim)
+wall    = 2.4;   // wall thickness
+floor_t = 3.2;   // floor thickness
 
 // ---- flutes ----
-ribs    = 30;    // number of vertical ribs
-amp     = 1.6;   // how far the ribs stand out
+ribs    = 36;    // number of vertical ribs (finer, more of them)
+amp     = 1.1;   // how far the ribs stand out (shallower)
 
 // ---- rim ----
-rim_r   = 2.7;   // rolled lip radius
-rim_out = 3.0;   // how far the lip flares past the wall (covers the flute tips)
+rim_r   = 1.8;   // rolled lip radius (slimmer)
+rim_out = 1.8;   // how far the lip flares past the wall (covers the flute tips)
 
 // ---- foot ----
 foot_recess = 1.6;   // depth of the underside recess

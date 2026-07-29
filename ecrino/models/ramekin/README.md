@@ -3,8 +3,11 @@
 A parametric 3D-printable ramekin modelled from reference photos: a round
 tapered bowl with vertical flutes, a rolled/flared rim and a recessed foot.
 
-Default size (≈ standard small dip bowl):
-- top ⌀ ~92 mm, bottom ⌀ ~62 mm, height ~47 mm (incl. rim), wall 2.6 mm.
+Default size (tuned to match the user's own ramekin — smaller, less flare,
+finer ribs, slimmer rim):
+- top ⌀ ~72 mm, bottom ⌀ ~56 mm, height ~40 mm (incl. rim), wall 2.4 mm, 36 ribs.
+
+Send exact top ⌀ / bottom ⌀ / height to lock the size to your bowl.
 
 ## Files
 - `ramekin.scad` — parametric source
