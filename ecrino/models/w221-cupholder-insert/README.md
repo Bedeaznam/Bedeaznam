@@ -18,10 +18,16 @@ retracted, put those two numbers in the `.scad`, re-export, and the fit is
 dialed in. Everything else (clearance, taper, wall, flange, notch) is derived
 automatically.
 
+## Two models here
+- **`dual_cupholder.scad` / `.stl`** — replica of the OEM twin cup-holder unit
+  (rounded rectangular bezel + two tapered wells + grip tabs), like the
+  reference photo. Set `cup_d`, `cup_depth`, `center_spacing`.
+- **`cup_insert.scad` / `.stl`** — a single fluted drop-in bowl for one well.
+
 ## Files
-- `cup_insert.scad` — parametric source
-- `cup_insert.stl` — built with the estimated defaults (verify fit!)
-- `renders/` — preview
+- `cup_insert.scad` / `dual_cupholder.scad` — parametric sources
+- `cup_insert.stl` / `dual_cupholder.stl` — built with estimated defaults (verify fit!)
+- `renders/` — previews
 
 ## Print (Bambu Lab H2S)
 - PLA/PETG, or **TPU** if you want a soft grippy, rattle-free fit.
