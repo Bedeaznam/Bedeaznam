@@ -27,6 +27,8 @@ text_emb  = 0.9;    // how far letters stand out (for the colour swap)
 text_z    = 17;     // vertical centre of the text band
 text_arc  = 150;    // total arc the text wraps across (deg)
 text_face = 270;    // centre direction of the text (deg)
+text_mirror = 0;    // 1 = mirror each glyph, 0 = not
+text_dir    = 1;    // +1 or -1 layout direction
 
 // which part to output: "all" (body+text fused), "body", or "text"
 // Use -D part=\"body\" / -D part=\"text\" to export the 2-colour pair.
@@ -76,7 +78,7 @@ module glyph(ch, a, r) {
     rotate([0, 0, a])
         translate([r, 0, text_z])
             rotate([90, 0, 90])
-                mirror([1, 0, 0])
+                mirror([text_mirror, 0, 0])
                     linear_extrude(height = text_emb + 1)
                         text(ch, size = text_size, font = text_font,
                              halign = "center", valign = "center");
@@ -87,9 +89,9 @@ module side_text() {
     // radius of the barrel at the text height (approx the max bulge)
     r = R - 1.2;
     step = (n > 1) ? text_arc / (n - 1) : 0;
-    start = text_face - text_arc / 2;   // reads left->right when viewed outside
+    start = text_face - text_dir * text_arc / 2;
     for (i = [0 : n - 1])
-        glyph(text_str[i], start + i * step, r);
+        glyph(text_str[i], start + text_dir * i * step, r);
 }
 
 // raised text trimmed to a thin shell that hugs the curved surface
