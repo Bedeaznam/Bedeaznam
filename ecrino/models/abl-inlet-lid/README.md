@@ -20,11 +20,12 @@ marked `MEASURE` in `abl_lid.scad`:
 
 | Parameter | Default | What to measure |
 |---|---|---|
-| `lid_w` | 100 | lid width, across the hinge |
-| `lid_h` | 96 | lid height, top edge to bottom edge |
-| `lid_t` | 3.0 | plate thickness |
+| `lid_w` | 105 | outer width, across the hinge |
+| `lid_h` | 100 | outer height, top edge to bottom edge |
+| `depth` | 11 | how far the lid stands off the flange |
 | `pin_d` | 3.2 | hinge pin diameter (+0.2 clearance) |
-| `knuckle_cc` | 65 | centre-to-centre spacing of the two hinge knuckles |
+| `knuckle_cc` | 85 | centre-to-centre spacing of the two hinge knuckles |
+| `notch_w` / `notch_d` | 20 / 7 | the top-corner notches that clear the flange hinge lugs |
 
 Edit them, then re-export:
 
@@ -35,22 +36,28 @@ openscad -o abl_lid.stl abl_lid.scad
 ## Files
 
 - `abl_lid.scad` — parametric source
-- `abl_lid.stl` — plain plate; **prints flat, no supports**
-- `abl_lid_sealed.stl` — same plus an inner sealing lip (`lip=1`), better water
-  exclusion but needs light support under the plate
+- `abl_lid.stl` — ready to slice
 
-## Design notes
+## Shape
 
-- The hinge knuckles sit on the top edge with the pin bore lying **in** the plate
-  plane, so the part prints flat with the bore horizontal — no supports, and the
-  bore does not need drilling out.
-- The knuckle bosses thicken outwards only, for the same reason.
-- Four moulded-style ribs across the width, and a finger tab on the bottom edge.
+The original is not a flat plate but a shallow cover, so the model is built the
+same way:
+
+- smooth, slightly proud outer face with a 3 mm chamfer rolling into a perimeter
+  skirt ~11 mm deep
+- stiffening ribs on the **inside** only, as on the moulded original
+- notches in the two top corners to clear the hinge lugs of the flange
+- drain slots and a finger recess along the bottom edge
+- hinge knuckles whose pin bore lies **in** the lid plane, so it prints without
+  support and the bore needs no drilling
+
+No `ABL` lettering is reproduced — that is their trademark.
 
 ## Printing
 
 - Material: **ASA** or **PETG** — the part is exterior and sees UV and heat. PLA
   will warp and go brittle outdoors; PLA Wood is not suitable here.
-- 0.2 mm layers, 3 walls, 40 % infill, no supports (plain version).
-- Orientation: plate flat on the bed, ribs facing up.
+- 0.2 mm layers, 3 walls, 30 % infill, **no supports**.
+- Orientation: outer face flat on the bed, open side up. The 45 deg chamfer at
+  the face edge makes this self-supporting and leaves the visible face smooth.
 - The pin bore is modelled at 3.2 mm; ream to fit the original steel pin.

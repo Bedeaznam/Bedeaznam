@@ -1,109 +1,135 @@
-// Replacement hinged flap (lid) for ABL-Sursum 1154-210 flush-mount 16 A caravan inlet.
+// Replacement hinged lid for ABL-Sursum 1154-210 flush-mount 16 A caravan inlet.
 // Original spare part: ABL art. E154200 (Klappdeckel, series 1154).
 //
-// Reference data (from the ABL / Eurotech product data):
+// Shape follows the original: a shallow cover (not a flat plate) with a smooth,
+// slightly proud outer face, a chamfered edge rolling into a perimeter skirt,
+// stiffening ribs on the INSIDE, hinge notches in the two top corners and drain
+// slots along the bottom edge.
+//
+// Reference data (ABL / Eurotech):
 //   flange (front plate) 115 h x 105 w x 95 d
 //   wall cut out          90 h x  80 w x 80 d
-// The lid itself is NOT dimensioned in any public datasheet, so everything below
-// is parametric. Measure the original and adjust the five values marked MEASURE.
+// The lid is not dimensioned in any public datasheet, so the values marked
+// MEASURE must be checked against the original part.
 
 // ---------------------------------------------------------------- parameters
-lid_w      = 100;   // MEASURE lid width  (across, parallel to hinge)
-lid_h      =  96;   // MEASURE lid height (top edge to bottom edge)
-lid_t      =   3.0; // MEASURE plate thickness
-corner_r   =   6;   // corner radius
+lid_w      = 105;   // MEASURE outer width  (across the hinge)
+lid_h      = 100;   // MEASURE outer height (top edge to bottom edge)
+depth      =  11;   // MEASURE how far the lid stands off the flange
+wall       =   2.4; // skirt wall thickness
+face_t     =   2.4; // front face thickness
+corner_r   =   8;   // outer corner radius
+cham       =   3;   // 45 deg chamfer at the face edge (prints face-down, no support)
 
+// hinge: notches in the top corners for the flange lugs + knuckles for the pin
+notch_w    =  20;   // MEASURE width of one top-corner notch
+notch_d    =   7;   // MEASURE how deep the notch cuts into the lid
 pin_d      =   3.2; // MEASURE hinge pin diameter + 0.2 clearance
-knuckle_n  =   2;   // number of hinge knuckles
-knuckle_w  =  14;   // width of one knuckle
-knuckle_cc =  65;   // MEASURE centre-to-centre spacing of the hinge knuckles
-knuckle_t  =   7;   // knuckle boss thickness (grows outward -> prints flat)
-pin_up     =   4;   // pin axis above the plate top edge
+knuckle_w  =  14;
+knuckle_cc =  85;   // MEASURE centre-to-centre spacing of the hinge knuckles
+                    // (defaults to the centres of the two top-corner notches)
+knuckle_t  =   7;
+pin_up     =   3.5; // pin axis above the lid top edge
 
-ribs_n     =   4;   // decorative/stiffening ribs, as on the original
+// inside ribs, as on the original
+ribs_n     =   4;
 rib_len    =  70;
 rib_w      =   6;
-rib_h      =   1.6;
+rib_h      =   2.0;
 rib_pitch  =  11;
-rib_y0     =  14;   // first rib, measured down from the top edge
+rib_y0     =  20;   // first rib, from the top edge
 
-tab_w      =  18;   // finger tab on the bottom edge
-tab_out    =   6;
-
-lip        =   0;   // 1 = add inner sealing lip, 0 = plain plate (prints flat, no support)
-lip_in     =   5;   // lip inset from the outline
-lip_w      =   2;
-lip_h      =   2;
+// bottom edge details
+slots_n    =   3;   // drain slots
+slot_w     =   6;
+slot_h     =   1.6;
+slot_cc    =  16;
+grip_w     =  26;   // finger recess in the bottom skirt
+grip_d     =   1.6;
 
 $fn = 64;
 eps = 0.05;
 
 // ---------------------------------------------------------------- helpers
 module rrect(w, h, r) {
-    offset(r = r) offset(delta = -r) square([w, h], center = true);
+    rr = max(0.5, r);
+    offset(r = rr) offset(delta = -rr) square([w, h], center = true);
 }
 
-module plate() {
-    linear_extrude(lid_t) rrect(lid_w, lid_h, corner_r);
+// shallow cover shell: chamfer from the face up into a vertical skirt
+module shell(w, h, r, d, c) {
+    hull() {
+        linear_extrude(0.1) rrect(w - 2*c, h - 2*c, r - c);
+        translate([0, 0, c]) linear_extrude(max(0.1, d - c)) rrect(w, h, r);
+    }
 }
 
-// ribs run across the width, rounded like the moulded original
-module ribs() {
+module cover_solid() {
+    shell(lid_w, lid_h, corner_r, depth, cham);
+}
+
+module cover_cavity() {
+    translate([0, 0, face_t])
+        shell(lid_w - 2*wall, lid_h - 2*wall, corner_r - wall, depth, cham);
+}
+
+module inside_ribs() {
     for (i = [0 : ribs_n - 1])
-        translate([0, lid_h/2 - rib_y0 - i * rib_pitch, lid_t - eps])
+        translate([0, lid_h/2 - rib_y0 - i * rib_pitch, face_t - eps])
             hull() {
-                translate([-rib_len/2 + rib_w/2, 0, 0])
-                    cylinder(r = rib_w/2, h = rib_h);
-                translate([ rib_len/2 - rib_w/2, 0, 0])
-                    cylinder(r = rib_w/2, h = rib_h);
+                translate([-rib_len/2 + rib_w/2, 0, 0]) cylinder(r = rib_w/2, h = rib_h);
+                translate([ rib_len/2 - rib_w/2, 0, 0]) cylinder(r = rib_w/2, h = rib_h);
             }
 }
 
-// hinge knuckles: tabs on the top edge with the pin hole lying in the plate
-// plane, so the whole part prints flat with no support
+// top-corner notches that clear the hinge lugs of the flange
+module hinge_notches() {
+    for (s = [-1, 1])
+        translate([s * (lid_w/2 - notch_w/2), lid_h/2 - notch_d/2 + eps, -1])
+            cube([notch_w + eps, notch_d, depth + 2], center = true);
+}
+
+// knuckles sit in the notches; the pin bore lies in the lid plane so the part
+// prints flat with no support and the bore needs no drilling
 module knuckles() {
-    for (i = [0 : knuckle_n - 1]) {
-        x = -knuckle_cc/2 + i * (knuckle_cc / max(1, knuckle_n - 1));
+    for (i = [0 : 1]) {
+        x = -knuckle_cc/2 + i * knuckle_cc;
         translate([x, 0, 0]) difference() {
             hull() {
-                translate([-knuckle_w/2, lid_h/2 - 6, 0])
+                translate([-knuckle_w/2, lid_h/2 - notch_d - 4, 0])
                     cube([knuckle_w, 6, knuckle_t]);
                 translate([0, lid_h/2 + pin_up, knuckle_t/2])
-                    rotate([0, 90, 0])
-                        cylinder(r = knuckle_t/2, h = knuckle_w, center = true);
+                    rotate([0, 90, 0]) cylinder(r = knuckle_t/2, h = knuckle_w, center = true);
             }
-            // pin bore
             translate([0, lid_h/2 + pin_up, knuckle_t/2])
-                rotate([0, 90, 0])
-                    cylinder(d = pin_d, h = knuckle_w + 2, center = true);
+                rotate([0, 90, 0]) cylinder(d = pin_d, h = knuckle_w + 2, center = true);
         }
     }
 }
 
-module tab() {
-    hull() {
-        translate([-tab_w/2, -lid_h/2, 0]) cube([tab_w, 2, lid_t]);
-        translate([-tab_w/2 + 2, -lid_h/2 - tab_out, 0])
-            cube([tab_w - 4, 2, lid_t * 0.7]);
-    }
-}
-
-module sealing_lip() {
-    linear_extrude(lip_h)
-        difference() {
-            offset(r = -lip_in)          rrect(lid_w, lid_h, corner_r);
-            offset(r = -lip_in - lip_w)  rrect(lid_w, lid_h, corner_r);
-        }
+module bottom_details() {
+    // drain slots through the bottom skirt
+    for (i = [0 : slots_n - 1])
+        translate([(i - (slots_n - 1)/2) * slot_cc, -lid_h/2, depth - slot_h/2 - 1.5])
+            cube([slot_w, wall * 4, slot_h], center = true);
+    // finger recess
+    translate([0, -lid_h/2 + grip_d/2 - eps, depth/2 + cham/2])
+        cube([grip_w, grip_d, depth], center = true);
 }
 
 // ---------------------------------------------------------------- assembly
 module abl_lid() {
-    union() {
-        plate();
-        ribs();
-        knuckles();
-        tab();
-        if (lip) translate([0, 0, -lip_h + eps]) sealing_lip();
+    difference() {
+        union() {
+            difference() {
+                cover_solid();
+                cover_cavity();
+                hinge_notches();
+            }
+            inside_ribs();
+            knuckles();
+        }
+        bottom_details();
     }
 }
 
