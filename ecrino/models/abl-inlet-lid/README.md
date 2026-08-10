@@ -36,20 +36,26 @@ openscad -o abl_lid.stl abl_lid.scad
 ## Files
 
 - `abl_lid.scad` — parametric source
-- `abl_lid.stl` — ready to slice
+- `abl_lid.stl` — flat face; prints face-down with no supports (recommended)
+- `abl_lid_crowned.stl` — with the 1.2 mm crown of the original; looks closer but
+  the face is convex, so print it open-side-down or add a brim
 
 ## Shape
 
 The original is not a flat plate but a shallow cover, so the model is built the
 same way:
 
-- smooth, slightly proud outer face with a 3 mm chamfer rolling into a perimeter
-  skirt ~11 mm deep
+- gently crowned outer face with a 5 mm radius rolling into a perimeter skirt
+  ~11 mm deep — the "pillow" silhouette of the original, not a chamfered plate
 - stiffening ribs on the **inside** only, as on the moulded original
-- notches in the two top corners to clear the hinge lugs of the flange
+- small notches in the two top corners to clear the hinge lugs of the flange
+- hinge knuckles sit **inside** against the top wall, so nothing protrudes past
+  the outline; the pin bore is horizontal in the print, so it needs no support
+  and no drilling
 - drain slots and a finger recess along the bottom edge
-- hinge knuckles whose pin bore lies **in** the lid plane, so it prints without
-  support and the bore needs no drilling
+
+The strip visible above the lid on photos of the assembled inlet belongs to the
+flange, not to the lid (`band = 0`).
 
 No `ABL` lettering is reproduced — that is their trademark.
 
