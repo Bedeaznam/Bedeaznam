@@ -3,6 +3,27 @@ plugins {
     id("org.jetbrains.kotlin.android")
 }
 
+fun javaStringLiteral(value: String): String {
+    val escaped = StringBuilder(value.length + 2)
+    escaped.append('"')
+    for (c in value) {
+        when (c) {
+            '\\' -> escaped.append("\\\\")
+            '"' -> escaped.append("\\\"")
+            '\n' -> escaped.append("\\n")
+            '\r' -> escaped.append("\\r")
+            '\t' -> escaped.append("\\t")
+            else -> if (c.code < 0x20 || c.code == 0x7f) {
+                escaped.append(String.format("\\u%04x", c.code))
+            } else {
+                escaped.append(c)
+            }
+        }
+    }
+    escaped.append('"')
+    return escaped.toString()
+}
+
 android {
     namespace = "com.ecrino.app"
     compileSdk = 34
@@ -16,8 +37,8 @@ android {
 
         // Where order requests are delivered. Override per build without code changes.
         // Email fallback is always available; webhook is used when non-blank.
-        buildConfigField("String", "ORDER_EMAIL", "\"${project.findProperty("orderEmail") ?: "yasinuzunow@gmail.com"}\"")
-        buildConfigField("String", "ORDER_WEBHOOK_URL", "\"${project.findProperty("orderWebhookUrl") ?: ""}\"")
+        buildConfigField("String", "ORDER_EMAIL", javaStringLiteral(project.findProperty("orderEmail")?.toString() ?: "yasinuzunow@gmail.com"))
+        buildConfigField("String", "ORDER_WEBHOOK_URL", javaStringLiteral(project.findProperty("orderWebhookUrl")?.toString() ?: ""))
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -64,6 +85,7 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.2")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.2")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
 
     testImplementation("junit:junit:4.13.2")

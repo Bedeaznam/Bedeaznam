@@ -10,7 +10,7 @@ S = 0.02  # mm -> Blender units
 # hinge params (must match the .scad)
 W = 58; knuckle_r = 4.2; base_h = 3.4 + 18
 hinge_y = W + knuckle_r - 1.2
-hinge_z = base_h
+hinge_z = base_h + knuckle_r
 wall = 3.4; floor_t = 3.4; insert_clear = 0.6
 
 addon_utils.enable("io_mesh_stl")
@@ -57,12 +57,14 @@ for o in (base, lid, insert): o.scale = (S, S, S)
 base.location = (0, 0, 0)
 insert.location = ((wall+insert_clear)*S, (wall+insert_clear)*S, floor_t*S)
 
-# open the lid ~105 deg about the hinge axis (X axis at y=hinge_y, z=hinge_z)
+# the lid STL is printed flat, with its hinge axis one knuckle radius above the
+# bed; lift it onto the base, then swing it ~105 deg about the shared axis
 ang = math.radians(105)
 Rx = Matrix.Rotation(ang, 3, 'X')
 pivot = Vector((0, hinge_y, hinge_z)) * S
+seat = Vector((0, 0, base_h)) * S
 lid.rotation_euler = Euler((ang, 0, 0), 'XYZ')
-lid.location = pivot - (Rx @ pivot)
+lid.location = pivot + (Rx @ (seat - pivot))
 
 base.data.materials.append(wood)
 lid.data.materials.append(wood2)

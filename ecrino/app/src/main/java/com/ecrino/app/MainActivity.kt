@@ -29,16 +29,20 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ecrino.app.ui.theme.EcrinoTheme
 import kotlinx.coroutines.launch
 
@@ -65,23 +69,37 @@ private val FINISHES = listOf(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun OrderFormScreen() {
+fun OrderFormScreen(viewModel: OrderViewModel = viewModel()) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val snackbar = remember { SnackbarHostState() }
 
-    var name by remember { mutableStateOf("") }
-    var contact by remember { mutableStateOf("") }
-    var style by remember { mutableStateOf("") }
-    var finish by remember { mutableStateOf(FINISHES.first()) }
+    // form values are saved state; the in-flight submission lives in the
+    // ViewModel so recreation neither duplicates nor loses it
+    var name by rememberSaveable { mutableStateOf("") }
+    var contact by rememberSaveable { mutableStateOf("") }
+    var style by rememberSaveable { mutableStateOf("") }
+    var finish by rememberSaveable { mutableStateOf(FINISHES.first()) }
     var finishExpanded by remember { mutableStateOf(false) }
-    var color by remember { mutableStateOf("") }
-    var quantity by remember { mutableStateOf("1") }
-    var weddingDate by remember { mutableStateOf("") }
-    var engraving by remember { mutableStateOf("") }
-    var referenceLink by remember { mutableStateOf("") }
-    var notes by remember { mutableStateOf("") }
-    var submitting by remember { mutableStateOf(false) }
+    var color by rememberSaveable { mutableStateOf("") }
+    var quantity by rememberSaveable { mutableStateOf("1") }
+    var weddingDate by rememberSaveable { mutableStateOf("") }
+    var engraving by rememberSaveable { mutableStateOf("") }
+    var referenceLink by rememberSaveable { mutableStateOf("") }
+    var notes by rememberSaveable { mutableStateOf("") }
+    val submitting by viewModel.submitting.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        viewModel.results.collect { result ->
+            snackbar.showMessage(
+                when (result) {
+                    is SubmitResult.WebhookOk -> "Заявката е изпратена. Благодарим!"
+                    is SubmitResult.ShareOpened -> "Избери приложение, за да изпратиш заявката."
+                    is SubmitResult.Error -> "Грешка: ${result.message}"
+                }
+            )
+        }
+    }
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbar) }
@@ -227,17 +245,7 @@ fun OrderFormScreen() {
                         referenceLink = referenceLink.trim(),
                         notes = notes.trim(),
                     )
-                    submitting = true
-                    scope.launch {
-                        val result = OrderSubmitter.submit(context, order)
-                        submitting = false
-                        val msg = when (result) {
-                            is SubmitResult.WebhookOk -> "Заявката е изпратена. Благодарим!"
-                            is SubmitResult.ShareOpened -> "Избери приложение, за да изпратиш заявката."
-                            is SubmitResult.Error -> "Грешка: ${result.message}"
-                        }
-                        snackbar.showMessage(msg)
-                    }
+                    viewModel.submit(context, order)
                 },
                 enabled = !submitting,
                 modifier = Modifier.fillMaxWidth()

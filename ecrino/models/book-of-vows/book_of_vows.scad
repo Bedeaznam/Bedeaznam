@@ -75,26 +75,35 @@ mag_y2 = W * 0.72;
 // ---------- BASE ----------
 module base() {
     difference() {
-        // solid body
-        rbox(L, W, base_h, corner_r);
+        union() {
+            difference() {
+                // solid body
+                rbox(L, W, base_h, corner_r);
 
-        // inner cavity
-        translate([spine_wall, wall, floor_t])
-            rbox(L - spine_wall - wall,
-                 W - 2*wall,
-                 cavity_d + eps,
-                 max(0.5, corner_r - 2));
+                // inner cavity
+                translate([spine_wall, wall, floor_t])
+                    rbox(L - spine_wall - wall,
+                         W - 2*wall,
+                         cavity_d + eps,
+                         max(0.5, corner_r - 2));
 
-        // page-line grooves on the three non-spine faces
-        page_grooves();
+                // page-line grooves on the three non-spine faces
+                page_grooves();
 
-        // spine recess for glued hinge strip (outer X=0 face)
-        translate([-eps, (W - spine_recess_w)/2, base_h*0.15])
-            cube([spine_recess_d + eps, spine_recess_w, base_h*0.7]);
+                // spine recess for glued hinge strip (outer X=0 face)
+                translate([-eps, (W - spine_recess_w)/2, base_h*0.15])
+                    cube([spine_recess_d + eps, spine_recess_w, base_h*0.7]);
+            }
 
-        // magnet pockets in the front rim (open upward toward cover)
+            // bosses that carry the magnet pockets through the cavity
+            for (my = [mag_y1, mag_y2])
+                translate([mag_x, my, floor_t - eps])
+                    cylinder(d = magnet_d + 2*mag_wall, h = cavity_d + eps);
+        }
+
+        // magnet pockets, open upward so the magnets can be pressed in
         for (my = [mag_y1, mag_y2])
-            translate([mag_x, my, base_h - magnet_h - mag_wall])
+            translate([mag_x, my, base_h - magnet_h])
                 cylinder(d = magnet_d, h = magnet_h + eps);
     }
 }
@@ -167,6 +176,11 @@ module insert() {
         // ring band slot
         translate([il/2 - slot_w/2, (iw - slot_len)/2, ih - slot_depth])
             cube([slot_w, slot_len, slot_depth + eps]);
+        // clearance for the magnet bosses in the base
+        for (my = [mag_y1, mag_y2])
+            translate([mag_x - spine_wall - insert_clear,
+                       my - wall - insert_clear, -eps])
+                cylinder(d = magnet_d + 2*mag_wall + 0.8, h = ih + 2*eps);
     }
 }
 

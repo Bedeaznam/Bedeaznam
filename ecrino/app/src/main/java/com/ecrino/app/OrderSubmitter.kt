@@ -5,8 +5,9 @@ import android.content.Intent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.OutputStream
-import java.net.HttpURLConnection
+import java.net.MalformedURLException
 import java.net.URL
+import javax.net.ssl.HttpsURLConnection
 
 /** Result of trying to deliver an order request. */
 sealed interface SubmitResult {
@@ -18,26 +19,37 @@ sealed interface SubmitResult {
 }
 
 /**
- * Delivers an [OrderRequest]. If a webhook URL is configured it POSTs JSON there;
- * otherwise (or on failure) it falls back to a share sheet (email / WhatsApp /
- * Telegram / SMS), so the app is useful with zero backend infrastructure.
+ * Delivers an [OrderRequest]. If an HTTPS webhook URL is configured it POSTs JSON
+ * there; otherwise (or on failure) it falls back to a share sheet (email / WhatsApp
+ * / Telegram / SMS), so the app is useful with zero backend infrastructure.
+ *
+ * Customer data is never sent over cleartext HTTP — a non-HTTPS webhook is ignored.
  */
 object OrderSubmitter {
 
     suspend fun submit(context: Context, order: OrderRequest): SubmitResult {
         val webhook = BuildConfig.ORDER_WEBHOOK_URL
-        if (webhook.isNotBlank()) {
+        if (isHttpsUrl(webhook)) {
             val posted = postWebhook(webhook, order.toJson())
             if (posted) return SubmitResult.WebhookOk
         }
         return openShare(context, order)
     }
 
+    private fun isHttpsUrl(urlString: String): Boolean {
+        if (urlString.isBlank()) return false
+        return try {
+            URL(urlString).protocol.equals("https", ignoreCase = true)
+        } catch (e: MalformedURLException) {
+            false
+        }
+    }
+
     private suspend fun postWebhook(urlString: String, json: String): Boolean =
         withContext(Dispatchers.IO) {
-            var conn: HttpURLConnection? = null
+            var conn: HttpsURLConnection? = null
             try {
-                conn = (URL(urlString).openConnection() as HttpURLConnection).apply {
+                conn = (URL(urlString).openConnection() as? HttpsURLConnection ?: return@withContext false).apply {
                     requestMethod = "POST"
                     connectTimeout = 10_000
                     readTimeout = 10_000
