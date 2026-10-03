@@ -50,6 +50,7 @@ object OrderSubmitter {
             var conn: HttpsURLConnection? = null
             try {
                 conn = (URL(urlString).openConnection() as? HttpsURLConnection ?: return@withContext false).apply {
+                    instanceFollowRedirects = false
                     requestMethod = "POST"
                     connectTimeout = 10_000
                     readTimeout = 10_000

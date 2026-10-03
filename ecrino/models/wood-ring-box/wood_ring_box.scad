@@ -93,12 +93,25 @@ module base() {
                 union() {
                     rbox(L, W, base_h, corner_r);
                     // base gets the two OUTER knuckles (index 0 and 2)
-                    for (i = [0, 2]) knuckle(kc[i], kw - knuckle_clear, hinge_z);
-                    // webs joining outer knuckles to the back wall
-                    for (i = [0, 2])
-                        translate([kc[i] - (kw-knuckle_clear)/2, W - wall, 0])
-                            cube([kw - knuckle_clear,
-                                  hinge_y - (W - wall) + eps, hinge_z]);
+                    // webs join them to the back wall; above the rim they stay
+                    // behind the closed lid's footprint
+                    for (i = [0, 2]) {
+                        x0 = kc[i] - (kw - knuckle_clear)/2;
+                        difference() {
+                            union() {
+                                knuckle(kc[i], kw - knuckle_clear, hinge_z);
+                                translate([x0, W - wall, 0])
+                                    cube([kw - knuckle_clear,
+                                          hinge_y - (W - wall) + eps, base_h]);
+                                translate([x0, W + knuckle_clear, 0])
+                                    cube([kw - knuckle_clear,
+                                          hinge_y - (W + knuckle_clear) + eps, hinge_z]);
+                            }
+                            translate([x0 - 1, W - wall - 1, base_h])
+                                cube([kw - knuckle_clear + 2,
+                                      wall + 1 + knuckle_clear, 2*knuckle_r + 1]);
+                        }
+                    }
                 }
                 // cavity
                 translate([wall, wall, floor_t])
@@ -159,6 +172,11 @@ module lid() {
                 translate([wall*0.6, wall*0.6, -eps])
                     rbox(L - 1.2*wall, W - 1.2*wall, lid_h - 2.6,
                          max(1, corner_r - 2));
+                // swing clearance around the base's outer knuckles
+                for (i = [0, 2])
+                    translate([kc[i] - kw/2, hinge_y, hinge_z_lid])
+                        rotate([0, 90, 0])
+                            cylinder(h = kw, r = knuckle_r + knuckle_clear);
                 // engraved tree on top
                 translate([L/2, W/2 + 3, lid_h - engrave_d])
                     linear_extrude(engrave_d + eps) tree_of_life();
@@ -203,7 +221,7 @@ else {
     // lid seated on the base, then rotated open about the shared hinge axis
     color("BurlyWood")
         translate([0, hinge_y, hinge_z])
-            rotate([open_angle, 0, 0])
+            rotate([-open_angle, 0, 0])
                 translate([0, -hinge_y, -hinge_z])
                     translate([0, 0, base_h])
                         lid();

@@ -59,7 +59,7 @@ insert.location = ((wall+insert_clear)*S, (wall+insert_clear)*S, floor_t*S)
 
 # the lid STL is printed flat, with its hinge axis one knuckle radius above the
 # bed; lift it onto the base, then swing it ~105 deg about the shared axis
-ang = math.radians(105)
+ang = math.radians(-105)
 Rx = Matrix.Rotation(ang, 3, 'X')
 pivot = Vector((0, hinge_y, hinge_z)) * S
 seat = Vector((0, 0, base_h)) * S

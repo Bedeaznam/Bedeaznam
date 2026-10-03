@@ -39,7 +39,7 @@ module thread(len, major, pitch, depth) {
     minor = major - 2 * depth;
     steps = 60;
     cylinder(d = minor, h = len);
-    for (i = [0 : steps * len / pitch - 1]) {
+    for (i = [ceil(steps * turns_start / pitch) : steps * len / pitch - 1]) {
         a0 = 360 * i / steps;
         a1 = 360 * (i + 1) / steps;
         z0 = pitch * i / steps;
