@@ -5,6 +5,7 @@ MakerWorld "Instagram logo for printing on a TPU shirt".
 
 - `yd7_iron_on.stl`: 90 x 53 x 0.8 mm, reads correctly when placed bed-side down on the fabric.
 - `yd7_iron_on_mirrored.stl`: mirrored copy, for placing the top side of the print on the fabric.
+- `yd7_iron_on_0.4mm.stl`: 2-layer version; thinner transfers bond better and stay softer on the shirt.
 - `yd7_iron_on.scad`: parameters `width` (mm), `thickness`, `mirrored`.
 - `yd7_outline.scad` is generated from `yd7_source.png` by `trace.py` (OpenCV contours); rerun it for a new logo image.
 
