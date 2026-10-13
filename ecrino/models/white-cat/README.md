@@ -2,7 +2,7 @@
 
 Source: Meshy AI model "меов" by yasinuzunow. Prepared for printing:
 
-- The original mesh was not watertight (open whisker geometry), so it was voxel-remeshed in Blender, keeping the main body only. The hair-thin whiskers are dropped; the stubs at the muzzle stay.
+- The original mesh was not watertight (open whisker geometry), so it was voxel-remeshed in Blender, keeping the main body only. The whiskers are kept but are thinner than a 0.6 mm line, so they print as short stubs at best.
 - Bottom flat-cut, then scaled to 200 mm tall (115 x 179 x 200 mm), decimated to 900k faces. Mesh is watertight, single body.
 - `white_cat_200mm.stl`: ready to slice.
 
